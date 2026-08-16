@@ -1,0 +1,95 @@
+html_content = """<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>EV Battery Failure Predictor</title>
+<style>
+  body { font-family: Arial, sans-serif; max-width: 900px; margin: 30px auto; padding: 0 20px; }
+  h1 { font-size: 22px; }
+  form { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  label { font-size: 12px; display: block; margin-bottom: 2px; color: #333; }
+  input, select { width: 100%; padding: 5px; box-sizing: border-box; }
+  .field { margin-bottom: 8px; }
+  button { grid-column: 1 / -1; padding: 12px; font-size: 16px; margin-top: 10px; cursor: pointer; }
+  #result { margin-top: 20px; padding: 15px; border-radius: 6px; font-size: 16px; display: none; }
+  .fail { background: #ffe0e0; border: 1px solid #cc0000; }
+  .ok { background: #e0ffe0; border: 1px solid #00aa00; }
+</style>
+</head>
+<body>
+<h1>EV Battery Failure Predictor</h1>
+<form id="predictForm"></form>
+<div id="result"></div>
+
+<script>
+const fields = [
+  ["vehicle_brand","text"], ["vehicle_model","text"], ["vehicle_type","text"],
+  ["manufacturing_year","number"], ["battery_manufacturer","text"], ["battery_chemistry","text"],
+  ["battery_capacity_kwh","number"], ["drive_type","text"], ["odometer_km","number"],
+  ["vehicle_age_years","number"], ["fleet_or_private","text"], ["cycle_count","number"],
+  ["battery_health_percent","number"], ["state_of_charge","number"], ["depth_of_discharge","number"],
+  ["state_of_health","number"], ["cell_voltage_avg","number"], ["cell_voltage_std","number"],
+  ["pack_voltage","number"], ["cell_temperature_avg","number"], ["cell_temperature_max","number"],
+  ["internal_resistance","number"], ["charge_efficiency","number"], ["discharge_efficiency","number"],
+  ["remaining_capacity","number"], ["capacity_loss_percent","number"], ["charging_cycles_last_month","number"],
+  ["fast_charge_ratio","number"], ["slow_charge_ratio","number"], ["average_charge_power_kw","number"],
+  ["average_charging_time","number"], ["overnight_charging_ratio","number"], ["home_charging_ratio","number"],
+  ["charging_interruptions","number"], ["overcharge_events","number"], ["average_speed","number"],
+  ["average_trip_distance","number"], ["aggressive_acceleration_score","number"], ["hard_braking_score","number"],
+  ["regenerative_braking_usage","number"], ["highway_driving_ratio","number"], ["city_driving_ratio","number"],
+  ["daily_distance","number"], ["average_ambient_temperature","number"], ["maximum_temperature","number"],
+  ["minimum_temperature","number"], ["humidity","number"], ["altitude","number"], ["terrain_type","text"],
+  ["dust_exposure","number"], ["last_service_days","number"], ["cooling_system_health","number"],
+  ["firmware_updates","number"], ["previous_faults","number"], ["maintenance_score","number"],
+  ["thermal_runaway_risk","number"], ["voltage_imbalance","number"], ["temperature_variance","number"],
+  ["sensor_fault_count","number"], ["BMS_warning_count","number"], ["abnormal_voltage_events","number"],
+  ["battery_stress_index","number"], ["aging_score","number"], ["thermal_health_score","number"],
+  ["charging_quality_score","number"], ["driving_stress_score","number"], ["predicted_remaining_life_cycles","number"]
+];
+
+const form = document.getElementById("predictForm");
+fields.forEach(([name, type]) => {
+  const div = document.createElement("div");
+  div.className = "field";
+  div.innerHTML = `<label>${name}</label><input name="${name}" type="${type}" step="any" required>`;
+  form.appendChild(div);
+});
+const btn = document.createElement("button");
+btn.type = "submit";
+btn.textContent = "Predict Failure Risk";
+form.appendChild(btn);
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const formData = new FormData(form);
+  const payload = {};
+  fields.forEach(([name, type]) => {
+    const val = formData.get(name);
+    payload[name] = type === "number" ? parseFloat(val) : val;
+  });
+
+  const res = await fetch("/predict", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  });
+  const data = await res.json();
+
+  const resultDiv = document.getElementById("result");
+  resultDiv.style.display = "block";
+  resultDiv.className = data.prediction === "Failure" ? "fail" : "ok";
+  resultDiv.innerHTML = `
+    <strong>Prediction:</strong> ${data.prediction}<br>
+    <strong>Failure Probability:</strong> ${(data.probability_failure * 100).toFixed(2)}%<br>
+    <strong>Threshold Used:</strong> ${data.threshold_used}
+  `;
+});
+</script>
+</body>
+</html>
+"""
+
+with open(os.path.join(STATIC_DIR, "index.html"), "w") as f:
+    f.write(html_content)
+
+print(f"Successfully wrote index.html to {STATIC_DIR}/index.html")
