@@ -14,7 +14,7 @@ model, scaler, label_encoders = load_artifact()
 
 
 def predict(data: dict) -> dict:
-  x = np.array([[features[f] for in FEATURE_ORDER]])
+  x = x = np.array([[features[f] for f in FEATURE_ORDER]])
   x = scaler.transform(x)
   x = torch.tensor(x_scaled, dtype=torch.float32)
 
