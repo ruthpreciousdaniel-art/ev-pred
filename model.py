@@ -5,8 +5,7 @@ import joblib
 import numpy as np
 import os
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-MODEL_DIR = BASE_DIR
+MODEL_DIR = os.path.join(os.path.dirname(__file__), ". .", "model")
 
 
 class BatteryFailureNet(nn.Module):
@@ -45,7 +44,7 @@ class BatteryPredictor:
         input_dim = self.metadata["input_dim"]
 
         self.scaler = joblib.load(os.path.join(MODEL_DIR, "scaler.pkl"))
-        self.encoders = joblib.load(os.path.join(MODEL_DIR, "label_encoders.pkl"))
+        self.encoders = joblib.load(os.path.join(MODEL_DIR, "encoders.pkl"))
 
         self.model = BatteryFailureNet(input_dim)
         self.model.load_state_dict(
@@ -85,6 +84,6 @@ class BatteryPredictor:
         }
 
 
-predictor = BatteryPredictor()
 def load_artifact():
-    return predictor
+    """Load and return a ready to use BatteryPredictor instance."""
+    return BatteryPredictor()
