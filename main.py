@@ -5,7 +5,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 
-from app.model import load_artifact
+from model import load_artifact
 
 app = FastAPI(title="EV Battery Failure Predictor API")
 templates = Jinja2Templates(directory="app/templates")
