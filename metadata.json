@@ -1,0 +1,14 @@
+import json
+
+metadata = {
+    "feature_columns": list(X.columns),
+    "cat_cols": cat_cols,
+    "num_cols": num_cols,
+    "input_dim": input_dim,
+    "threshold": float(best_threshold)
+}
+
+with open("ev_battery_predictor_deploy/metadata.json", "w") as f:
+    json.dump(metadata, f, indent=2)
+
+print(json.dumps(metadata, indent=2))
