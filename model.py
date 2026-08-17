@@ -5,7 +5,7 @@ import json
 import numpy as np
 import os
 
-MODEL_DIR = os.path.join(os.path.dirname(__file__), "models")
+MODEL_DIR = os.path.dirname(__file__)
 
 
 class BatteryFailureNet(nn.Module):
@@ -44,7 +44,7 @@ class BatteryPredictor:
         input_dim = self.metadata["input_dim"]
 
         self.scaler = joblib.load(os.path.join(MODEL_DIR, "scaler.pkl"))
-        self.encoders = joblib.load(os.path.join(MODEL_DIR, "encoders.pkl"))
+        self.encoders = joblib.load(os.path.join(MODEL_DIR, "label_encoders.pkl"))
 
         self.model = BatteryFailureNet(input_dim)
         self.model.load_state_dict(
