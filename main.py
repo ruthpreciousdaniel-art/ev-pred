@@ -18,13 +18,12 @@ app.add_middleware(
 
 predictor = load_artifact()
 
-STATIC_DIR = os.path.join(os.path.dirname(__file__), "static")
-app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+BASE_DIR = os.path.dirname(_file_)
 
 
 @app.get("/")
 def serve_ui():
-    return FileResponse(os.path.join(STATIC_DIR, "index.html"))
+    return FileResponse(os.path.join(BASE_DIR, "index.html"))
 
 
 @app.get("/health")
