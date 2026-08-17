@@ -86,3 +86,5 @@ class BatteryPredictor:
 
 
 predictor = BatteryPredictor()
+def load_artifact():
+    return predictor
