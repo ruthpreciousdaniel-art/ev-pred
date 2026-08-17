@@ -5,7 +5,7 @@ import json
 import numpy as np
 import os
 
-MODEL_DIR = os.path.join(os.path.dirname(__file__), "..", "models")
+MODEL_DIR = os.path.join(os.path.dirname(__file__), "models")
 
 
 class BatteryFailureNet(nn.Module):
