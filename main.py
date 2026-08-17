@@ -18,7 +18,7 @@ app.add_middleware(
 
 predictor = load_artifact()
 
-BASE_DIR = os.path.dirname(_file_)
+BASE_DIR = os.path.dirname(__file__)
 
 
 @app.get("/")
